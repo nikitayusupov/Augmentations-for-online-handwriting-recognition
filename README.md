@@ -1,1 +1,1 @@
-# Augmentations-for-online-handwriting-recognition
+# diploma_nikita

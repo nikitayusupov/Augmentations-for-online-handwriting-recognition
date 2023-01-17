@@ -1,0 +1,34 @@
+dataset:
+  transformations:
+    -
+      name: ItalicityAngle
+      apply_probability: 1
+      min_angle_degrees: 0
+      max_angle_degrees: 35
+    -
+      name: Normalize
+    -
+      name: EquidistantResample
+      delta: 0.05
+    -
+      name: Normalize
+    -
+      name: CalculateDifferencesBetweenAdjacentPoints
+  to_lowercase: False
+
+train:
+  batch_size: 8
+  lr: 0.0001
+  epochs: 10000
+  dataloader_num_workers: 8
+
+decoder:
+  num_processes: 10
+
+val:
+  batch_size: 128
+  frequency: 15
+  dataloader_num_workers: 8
+
+device: cuda:1
+num_images_visualize_before_train: 50

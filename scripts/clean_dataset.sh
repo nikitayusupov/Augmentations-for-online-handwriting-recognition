@@ -1,0 +1,1 @@
+grep -rwl data/ -e 'Please Enter Transcription here' | xargs -I '{}' rm '{}'

@@ -1,0 +1,13 @@
+--extra-index-url https://download.pytorch.org/whl/cu116
+
+wandb
+opencv-python
+matplotlib
+numpy
+torch==1.13.1
+torchvision
+tqdm
+scikit-learn
+torchaudio
+torchmetrics
+hydra-core

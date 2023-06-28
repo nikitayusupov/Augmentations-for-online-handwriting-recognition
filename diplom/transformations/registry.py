@@ -5,7 +5,7 @@ from diplom.transformations.preprocessing import (
     EquidistantResample
 )
 from diplom.transformations.augmentations import (
-    ItalicityAngle,
+    ItalicityAngle, BaselineInclinationAngle, ChangeMagnitudeRatio, ChangeFrequency, BetaElliptic
 )
 
 REGISTRY = {
@@ -13,6 +13,10 @@ REGISTRY = {
     "CalculateDifferencesBetweenAdjacentPoints": CalculateDifferencesBetweenAdjacentPoints,
     "EquidistantResample": EquidistantResample,
     "ItalicityAngle": ItalicityAngle,
+    "BaselineInclinationAngle": BaselineInclinationAngle,
+    "ChangeMagnitudeRatio": ChangeMagnitudeRatio,
+    "ChangeFrequency": ChangeFrequency,
+    "BetaElliptic": BetaElliptic,
 }
 
 

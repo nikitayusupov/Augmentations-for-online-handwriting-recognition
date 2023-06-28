@@ -1,4 +1,4 @@
-CONFIG_NAME=${1:-no_lm_no_aug_lower_case}    
+CONFIG_NAME=${1:-main_config_no_aug}    
 
 # WANDB_MODE=disabled \
 CUDA_DEVICE_ORDER=PCI_BUS_ID \

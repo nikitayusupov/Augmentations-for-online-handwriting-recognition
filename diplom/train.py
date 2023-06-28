@@ -13,14 +13,19 @@ from diplom.model import IAMOnLineModel
 from diplom.postprocessing import IAMOnLineCTCDecoder, IAMOnLineCTCDecoderMultiprocessed
 
 
-def visualize_random_images(dataset, num_images: int):
+def visualize_random_images(dataset, num_images: int, dataset_part: str) -> None:
+    assert dataset_part in ('Test', 'Train', 'All')
     images = []
+    cnt = 0
     for idx in random.sample(range(len(dataset)), k=num_images):
-        image_path = f"visualization/{idx}.jpg"
+        image_path = f"/home/nioljusupov/diploma_nikita/visualization/{idx}.jpg"
         dataset.visualize(idx, image_path)
         image = wandb.Image(image_path, caption=dataset[idx]["text"])
         images.append(image)
-    wandb.log({"visualization": images})
+        if cnt % 10 == 0:
+            print(f'{cnt} images visualized')
+        cnt += 1
+    wandb.log({f"{dataset_part} visualization": images})
 
 
 def train_one_epoch(model, train_loader, device, ctc_loss, optimizer, batch_ix):
@@ -76,7 +81,6 @@ def evaluate(model, decoder, loader, device, epoch_ix, split_name):
         f"{split_name}_cer": cer_value,
         "epoch_ix": epoch_ix,
     })
-
     return cer_value
 
 
@@ -89,22 +93,37 @@ def train(cfg: DictConfig) -> None:
     wandb.define_metric("val_cer", step_metric="epoch_ix")
     wandb.define_metric("test_cer", step_metric="epoch_ix")
 
+    print('Try to build_i_am_online_datasets')
     datasets = build_i_am_online_datasets(OmegaConf.to_container(cfg.dataset))
+    print('Did build datasets')
     string_encoder = datasets["all"].string_encoder
-    
-    # import pickle
-    # with open("string_encoder.pickle", "wb") as file:
-    #     pickle.dump(string_encoder, file)
-    # exit(0)
 
+    # print(f'Try to visualize random {cfg.num_images_visualize_before_train} images from train')
+    # visualize_random_images(
+    #     dataset=datasets["train"],
+    #     num_images=cfg.num_images_visualize_before_train,
+    #     dataset_part='Train'
+    # )
+    # print('Successfully visualized train images')
+
+    # print(f'Try to visualize random {cfg.num_images_visualize_before_train} images from test')
+    # visualize_random_images(
+    #     dataset=datasets["test"],
+    #     num_images=cfg.num_images_visualize_before_train,
+    #     dataset_part='Test'
+    # )
+    # print('Successfully visualized test images')
+
+    print(f'Try to visualize random {cfg.num_images_visualize_before_train} images from whole dataset')
     visualize_random_images(
         dataset=datasets["all"],
-        num_images=cfg.num_images_visualize_before_train
+        num_images=cfg.num_images_visualize_before_train,
+        dataset_part='All'
     )
+    print('Successfully visualized images')
 
-
-    for k, v in datasets.items():
-        print(f"Size of '{k}' split = {len(v)}")
+    for dataset_part_name, v in datasets.items():
+        print(f"Size of '{dataset_part_name}' split = {len(v)}")
 
     train_loader = DataLoader(
         datasets["train"],
@@ -130,7 +149,6 @@ def train(cfg: DictConfig) -> None:
     )
 
     device = cfg.device
-
     model = IAMOnLineModel(
         in_features=5,
         num_classes=1 + len(string_encoder._encoder.classes_),
@@ -138,7 +156,6 @@ def train(cfg: DictConfig) -> None:
     model = model.to(device)
 
     ctc_loss = nn.CTCLoss()
-
     optimizer = torch.optim.Adam(model.parameters(), lr=cfg.train.lr)
 
     # decoder = IAMOnLineCTCDecoder(string_encoder=string_encoder)
@@ -148,7 +165,6 @@ def train(cfg: DictConfig) -> None:
     )
 
     batch_ix = 0
-
     min_val_cer_value = float("inf")
 
     for epoch_ix in range(cfg.train.epochs):

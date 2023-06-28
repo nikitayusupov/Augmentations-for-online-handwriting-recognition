@@ -9,13 +9,6 @@ class IAMOnLineModel(nn.Module):
         self.in_features = in_features
         self.num_classes = num_classes
 
-        # self.lstms = nn.ModuleList([
-        #     nn.LSTM(in_features, 32, bidirectional=True, batch_first=True),
-        #     nn.LSTM(64, 32, bidirectional=True, batch_first=True),
-        #     nn.LSTM(64, 32, bidirectional=True, batch_first=True),
-        #     nn.LSTM(64, 32, bidirectional=True, batch_first=True),
-        #     nn.LSTM(64, 32, bidirectional=True, batch_first=True),
-        # ])
         self.lstms = nn.LSTM(
             in_features,
             32,

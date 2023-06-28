@@ -1,0 +1,37 @@
+dataset:
+  augmentations_before:
+    -
+      name: BetaElliptic
+      apply_probability: 0.65
+      min_x_width_scale: 0.75
+      max_x_width_scale: 1.25
+      y_noise_coef_global_ys_std: 0.2
+      polynom_degree: 3
+
+  normalizations:
+    -
+      name: Normalize
+    -
+      name: EquidistantResample
+      delta: 0.025 
+    -
+      name: CalculateDifferencesBetweenAdjacentPoints
+  augmentations_after:
+  to_lowercase: False
+
+train:
+  batch_size: 8
+  lr: 0.0001
+  epochs: 10000
+  dataloader_num_workers: 8
+
+decoder:
+  num_processes: 10
+
+val:
+  batch_size: 128
+  frequency: 15
+  dataloader_num_workers: 8
+
+device: cuda:3
+num_images_visualize_before_train: 50
